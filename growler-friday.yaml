@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: growler-friday
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: growler-friday
+  template:
+    metadata:
+      labels:
+        app: growler-friday
+    spec:
+      containers:
+      - name: growler-friday
+        image: alkrauss48/growler-friday:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: growler-friday
+spec:
+  type: NodePort
+  selector:
+    app: growler-friday
+  ports:
+  - port: 8080
+    targetPort: 80
+    nodePort: 30001
