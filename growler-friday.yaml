@@ -15,16 +15,16 @@ spec:
       containers:
       - name: growler-friday
         image: alkrauss48/growler-friday:latest
+        ports:
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: growler-friday
 spec:
-  type: NodePort
+  type: ClusterIP
+  ports:
+  - port: 80
   selector:
     app: growler-friday
-  ports:
-  - port: 8080
-    targetPort: 80
-    nodePort: 30001
