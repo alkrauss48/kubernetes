@@ -23,10 +23,8 @@ kind: Service
 metadata:
   name: labs-frontend
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: labs-frontend
   ports:
   - port: 80
-    targetPort: 80
-    nodePort: 30001

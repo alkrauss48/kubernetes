@@ -23,9 +23,8 @@ kind: Service
 metadata:
   name: labs-backend
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: labs-backend
   ports:
   - port: 9000
-    targetPort: 9000
