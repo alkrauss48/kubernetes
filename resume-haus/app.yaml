@@ -76,7 +76,7 @@ spec:
         - name: CP_TRIGGER
           value: admin
         - name: PRIMARY_SITE_URL
-          value: "http://foo.com"
+          value: "https://resume.thecodeboss.dev"
 ---
 apiVersion: v1
 kind: Service
