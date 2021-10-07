@@ -1,7 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: growler-friday-ingress
+  name: ingress
+  namespace: growler-friday
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -9,7 +10,7 @@ spec:
   tls:
     - hosts:
       - growlerfriday.com
-      secretName: growler-friday-ingress-tls
+      secretName: ingress-tls
   rules:
     - host: growlerfriday.com
       http:
@@ -18,6 +19,6 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: growler-friday
+              name: frontend
               port:
                 number: 80

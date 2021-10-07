@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: growler-friday
+  name: frontend
+  namespace: growler-friday
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: growler-friday
+      app: frontend
   template:
     metadata:
       labels:
-        app: growler-friday
+        app: frontend
     spec:
       containers:
       - name: growler-friday
@@ -21,10 +22,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: growler-friday
+  name: frontend
+  namespace: growler-friday
 spec:
   type: ClusterIP
   ports:
   - port: 80
   selector:
-    app: growler-friday
+    app: frontend
