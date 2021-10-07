@@ -11,3 +11,10 @@ metadata:
   name: growler-friday
   labels:
      name: growler-friday
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: labs
+  labels:
+     name: labs

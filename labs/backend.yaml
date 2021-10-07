@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: labs-backend
+  name: backend
+  namespace: labs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: labs-backend
+      app: backend
   template:
     metadata:
       labels:
-        app: labs-backend
+        app: backend
     spec:
       containers:
       - name: php
@@ -21,10 +22,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: labs-backend
+  name: backend
+  namespace: labs
 spec:
   type: ClusterIP
   selector:
-    app: labs-backend
+    app: backend
   ports:
   - port: 9000

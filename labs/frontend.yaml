@@ -1,16 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: labs-frontend
+  name: frontend
+  namespace: labs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: labs-frontend
+      app: frontend
   template:
     metadata:
       labels:
-        app: labs-frontend
+        app: frontend
     spec:
       containers:
       - name: nginx
@@ -21,10 +22,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: labs-frontend
+  name: frontend
+  namespace: labs
 spec:
   type: ClusterIP
   selector:
-    app: labs-frontend
+    app: frontend
   ports:
   - port: 80
