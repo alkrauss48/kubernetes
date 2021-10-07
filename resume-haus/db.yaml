@@ -28,26 +28,26 @@ spec:
         - name: database
           mountPath: /var/lib/mysql
         env:
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: resume-haus
-              key: database
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: resume-haus
-              key: username
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: resume-haus
-              key: password
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: resume-haus
-              key: rootPassword
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: database
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: password
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: rootPassword
 ---
 apiVersion: v1
 kind: Service

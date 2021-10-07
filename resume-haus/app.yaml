@@ -31,12 +31,12 @@ spec:
         - name: APP_ID
           valueFrom:
             secretKeyRef:
-              name: resume-haus
+              name: app
               key: appId
         - name: SECURITY_KEY
           valueFrom:
             secretKeyRef:
-              name: resume-haus
+              name: app
               key: securityKey
         - name: DB_DRIVER
           value: mysql
@@ -47,24 +47,24 @@ spec:
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
-              name: resume-haus
+              name: db
               key: database
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: resume-haus
+              name: db
               key: username
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: resume-haus
+              name: db
               key: password
         - name: DB_SCHEMA
           value: public
         - name: DB_TABLE_PREFIX
           valueFrom:
             secretKeyRef:
-              name: resume-haus
+              name: app
               key: tablePrefix
         - name: CP_TRIGGER
           value: admin
