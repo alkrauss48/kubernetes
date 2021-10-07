@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: resume-haus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: storage
+      containers:
+      - name: app
+        image: alkrauss48/resume-haus:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: storage
+          mountPath: "/app/storage"
+        env:
+        - name: ENVIRONMENT
+          value: dev
+        - name: APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: resume-haus
+              key: appId
+        - name: SECURITY_KEY
+          valueFrom:
+            secretKeyRef:
+              name: resume-haus
+              key: securityKey
+        - name: DB_DRIVER
+          value: mysql
+        - name: DB_SERVER
+          value: db
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: resume-haus
+              key: database
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: resume-haus
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: resume-haus
+              key: password
+        - name: DB_SCHEMA
+          value: public
+        - name: DB_TABLE_PREFIX
+          valueFrom:
+            secretKeyRef:
+              name: resume-haus
+              key: tablePrefix
+        - name: CP_TRIGGER
+          value: admin
+        - name: PRIMARY_SITE_URL
+          value: "http://foo.com"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: resume-haus
+spec:
+  type: ClusterIP
+  selector:
+    app: app
+  ports:
+  - port: 80
+    targetPort: 8080

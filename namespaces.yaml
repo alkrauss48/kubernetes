@@ -18,3 +18,10 @@ metadata:
   name: labs
   labels:
      name: labs
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: resume-haus
+  labels:
+     name: resume-haus
