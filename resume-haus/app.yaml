@@ -17,6 +17,13 @@ spec:
       - name: storage
         persistentVolumeClaim:
           claimName: storage
+      initContainers:
+        - name: storage-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: storage
+              mountPath: /data
       containers:
       - name: app
         image: alkrauss48/resume-haus:latest

@@ -19,9 +19,18 @@ spec:
       - name: database
         persistentVolumeClaim:
           claimName: database
+      initContainers:
+        - name: database-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: database
+              mountPath: /data
       containers:
       - name: db
         image: mysql:5.7
+        args:
+          - "--ignore-db-dir=lost+found"
         ports:
         - containerPort: 3306
         volumeMounts:
