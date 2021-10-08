@@ -22,3 +22,29 @@ spec:
               name: app
               port:
                 number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: soc-ingress
+  namespace: thecodeboss
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: https://thecodeboss.dev$request_uri
+spec:
+  # tls:
+  #   - hosts:
+  #     - thesocietea.org
+  #     secretName: soc-ingress-tls
+  rules:
+    - host: thesocietea.org
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: app
+              port:
+                number: 80
