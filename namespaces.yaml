@@ -25,3 +25,10 @@ metadata:
   name: resume-haus
   labels:
      name: resume-haus
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: thecodeboss
+  labels:
+     name: thecodeboss
