@@ -31,7 +31,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rewrite-target: https://thecodeboss.dev$request_uri
+    nginx.ingress.kubernetes.io/permanent-redirect: https://thecodeboss.dev$request_uri
 spec:
   tls:
     - hosts:
