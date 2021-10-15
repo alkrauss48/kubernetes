@@ -8,6 +8,7 @@ This repo houses my Digital Ocean managed kubernetes configuration for the follo
   * Includes redirect from [labs.thesocietea.org](https://labs.thesocietea.org)
 * [resume.thecodeboss.dev](https://resume.thecodeboss.dev)
 * [growlerfriday.com](https://growlerfriday.com)
+* [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
 
 ## Getting Started
 **Note**: This repo is configured to work with [Digital Ocean's managed

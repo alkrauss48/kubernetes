@@ -32,3 +32,10 @@ metadata:
   name: thecodeboss
   labels:
      name: thecodeboss
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: websockets
+  labels:
+     name: websockets
