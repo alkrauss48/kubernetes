@@ -28,7 +28,7 @@ spec:
               mountPath: /data
       containers:
       - name: db
-        image: mysql:5.7
+        image: alkrauss48/resume-haus-db:latest
         args:
           - "--ignore-db-dir=lost+found"
         ports:
