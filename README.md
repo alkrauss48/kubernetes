@@ -77,3 +77,13 @@ To Deploy:
 ```
 kubectl apply -f growler-friday
 ```
+
+## websockets.thecodeboss.dev
+
+Services: 2 (frontend & backend)
+Includes: Deployment, Service, and Ingress
+
+To Deploy:
+```
+kubectl apply -f websockets
+```
