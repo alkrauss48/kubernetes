@@ -19,7 +19,7 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: app
+              name: frontend
               port:
                 number: 80
 ---
@@ -45,7 +45,7 @@ spec:
           pathType: Exact
           backend:
             service:
-              name: app
+              name: frontend
               port:
                 number: 80
 ---
@@ -71,6 +71,6 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: app
+              name: frontend
               port:
                 number: 80
