@@ -62,9 +62,20 @@ spec:
   tls:
     - hosts:
       - thesocietea.org
+      - www.thecodeboss.dev
       secretName: soc-ingress-tls
   rules:
     - host: thesocietea.org
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 80
+    - host: www.thecodeboss.dev
       http:
         paths:
         - path: /
