@@ -39,3 +39,10 @@ metadata:
   name: websockets
   labels:
      name: websockets
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cyrus-lyrics-api
+  labels:
+     name: cyrus-lyrics-api

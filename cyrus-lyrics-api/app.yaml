@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: cyrus-lyrics-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: cyrus-lyrics-api
+        image: alkrauss48/cyrus-lyrics-api:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "5m"
+          limits:
+            memory: "100Mi"
+            cpu: "20m"
+        livenessProbe:
+          httpGet:
+            path: /sheets/default
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        env:
+          - name: GIN_MODE
+            value: release
+          - name: AUTH_PROVIDER_CERT_URL
+            value: "https://www.googleapis.com/oauth2/v1/certs"
+          - name: AUTH_URI
+            value: "https://accounts.google.com/o/oauth2/auth"
+          - name: TOKEN_URI
+            value: "https://oauth2.googleapis.com/token"
+          - name: AARON_SHEET_ID
+            valueFrom:
+              secretKeyRef:
+                name: app
+                key: aaronSheetId
+          - name: DEMO_SHEET_ID
+            valueFrom:
+              secretKeyRef:
+                name: app
+                key: demoSheetId
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: oauth
+                key: clientId
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth
+                key: clientSecret
+          - name: PROJECT_ID
+            valueFrom:
+              secretKeyRef:
+                name: oauth
+                key: projectId
+          - name: REDIRECT_URI
+            valueFrom:
+              secretKeyRef:
+                name: oauth
+                key: redirectUri
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: cyrus-lyrics-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+  selector:
+    app: app
