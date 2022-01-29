@@ -32,6 +32,11 @@ kubectl apply -f volumes.yaml # Adds PersistentVolumeClaims and PersistentVolume
 make retain pv=$PV_NAME # Run this for each volume
 ```
 
+For rolling deployments:
+```
+kubectl rollout restart deployment/<deployment> -n <namespace>
+```
+
 ## thecodeboss.dev
 
 Services: 2 (app & db)
