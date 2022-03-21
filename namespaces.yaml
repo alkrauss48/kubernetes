@@ -46,3 +46,10 @@ metadata:
   name: cyrus-lyrics-api
   labels:
      name: cyrus-lyrics-api
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cyrus-lyrics-web
+  labels:
+     name: cyrus-lyrics-web
