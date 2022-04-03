@@ -81,7 +81,17 @@ spec:
         - name: CP_TRIGGER
           value: admin
         - name: PRIMARY_SITE_URL
-          value: "https://resume.thecodeboss.dev"
+          value: "https://resumeha.us"
+        - name: GMAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: gmailUsername
+        - name: GMAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: gmailPassword
 ---
 apiVersion: v1
 kind: Service
