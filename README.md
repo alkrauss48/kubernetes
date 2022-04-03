@@ -3,12 +3,18 @@ My Kubernetes Config
 
 This repo houses my Digital Ocean managed kubernetes configuration for the following projects:
 * [thecodeboss.dev](https://thecodeboss.dev)
+  * Includes redirect from [thecodeboss.dev/resume](https://thecodeboss.dev/resume)
   * Includes redirect from [thesocietea.org](https://thesocietea.org)
 * [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
   * Includes redirect from [labs.thesocietea.org](https://labs.thesocietea.org)
-* [resume.thecodeboss.dev](https://resume.thecodeboss.dev)
+* [resumeha.us](https://resumeha.us)
+  * Includes redirect from [resume.thesocietea.org](https://resume.thesocietea.org)
+* [cyruskrauss.com](https://cyruskrauss.com)
+* [api.cyruskrauss.com](https://api.cyruskrauss.com)
 * [growlerfriday.com](https://growlerfriday.com)
 * [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
+* Carnegie Chart - Coming Soon
+* Mother Codes Best - Coming Soon
 
 ## Getting Started
 **Note**: This repo is configured to work with [Digital Ocean's managed
@@ -37,9 +43,9 @@ For rolling deployments:
 kubectl rollout restart deployment/<deployment> -n <namespace>
 ```
 
-## thecodeboss.dev
+## [thecodeboss.dev](https://thecodeboss.dev)
 
-Services: 2 (app & db)
+Services: 3 (frontend, wordpress, & db)
 Includes: Deployments, Services, Ingresses, Secret, and Volumes
 
 To Deploy:
@@ -50,7 +56,7 @@ cp thecodeboss/secrets.yaml.example thecodeboss/secrets.yaml
 kubectl apply -f thecodeboss
 ```
 
-## labs.thecodeboss.dev
+## [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
 
 Services: 2 (frontend & backend)
 Includes: Deployments, Services, and Ingresses
@@ -60,7 +66,7 @@ To Deploy:
 kubectl apply -f labs
 ```
 
-## resume.thecodeboss.dev
+## [resumeha.us](https://resumeha.us)
 
 Services: 2 (app & db)
 Includes: Deployments, Services, Ingresses, Secrets, and Volumes
@@ -73,7 +79,27 @@ cp resume-haus/secrets.yaml.example resume-haus/secrets.yaml
 kubectl apply -f resume-haus
 ```
 
-## growlerfriday.com
+## [cyruskrauss.com](https://cyruskrauss.com)
+
+Services: 1 (frontend)
+Includes: Deployment, Service, and Ingress
+
+To Deploy:
+```
+kubectl apply -f cyrus-lyrics-web
+```
+
+## [api.cyruskrauss.com](https://api.cyruskrauss.com)
+
+Services: 1 (app)
+Includes: Deployment, Service, Ingress, and Secrets
+
+To Deploy:
+```
+kubectl apply -f cyrus-lyrics-api
+```
+
+## [growlerfriday.com](https://growlerfriday.com)
 
 Services: 1 (frontend)
 Includes: Deployment, Service, and Ingress
@@ -83,7 +109,7 @@ To Deploy:
 kubectl apply -f growler-friday
 ```
 
-## websockets.thecodeboss.dev
+## [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
 
 Services: 2 (frontend & backend)
 Includes: Deployment, Service, and Ingress
