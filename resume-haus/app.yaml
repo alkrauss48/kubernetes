@@ -34,12 +34,17 @@ spec:
           mountPath: "/app/storage"
         env:
         - name: ENVIRONMENT
-          value: dev
+          value: production
         - name: APP_ID
           valueFrom:
             secretKeyRef:
               name: app
               key: appId
+        - name: CRAFT_LICENSE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: craftLicenseKey
         - name: SECURITY_KEY
           valueFrom:
             secretKeyRef:
