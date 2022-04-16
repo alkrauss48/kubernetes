@@ -53,3 +53,10 @@ metadata:
   name: cyrus-lyrics-web
   labels:
      name: cyrus-lyrics-web
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mothercodesbest
+  labels:
+     name: mothercodesbest.dev
