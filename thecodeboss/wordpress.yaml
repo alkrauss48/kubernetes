@@ -43,6 +43,12 @@ spec:
           mountPath: "/var/www/html/wp-content/plugins"
         - name: uploads
           mountPath: "/var/www/html/wp-content/uploads"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          initialDelaySeconds: 3
+          periodSeconds: 3
         env:
         - name: WORDPRESS_DB_HOST
           value: "db:3306"
