@@ -12,9 +12,22 @@ This repo houses my Digital Ocean managed kubernetes configuration for the follo
 * [cyruskrauss.com](https://cyruskrauss.com)
 * [api.cyruskrauss.com](https://api.cyruskrauss.com)
 * [growlerfriday.com](https://growlerfriday.com)
+* [mothercodesbest.dev](https://mothercodesbest.dev)
 * [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
 * Carnegie Chart - Coming Soon
-* Mother Codes Best - Coming Soon
+
+#### Note
+
+This repo does **not** include my continuous deployment configuration. That is
+housed in https://github.com/alkrauss48/fleet-infra, which uses the flux GitOps
+tool to scan images for updates based on semver tags, and deploy those updated
+images.
+
+The deployment manifests in this repo will all refer to `latest`, while the
+actual live deployments will refer to specific image tags specified in the
+fleet-infra repo.
+
+---
 
 ## Getting Started
 **Note**: This repo is configured to work with [Digital Ocean's managed
@@ -107,6 +120,16 @@ Includes: Deployment, Service, and Ingress
 To Deploy:
 ```
 kubectl apply -f growler-friday
+```
+
+## [mothercodesbest.dev](https://mothercodesbest.dev)
+
+Services: 1 (frontend)
+Includes: Deployment, Service, and Ingress
+
+To Deploy:
+```
+kubectl apply -f mothercodesbest
 ```
 
 ## [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
