@@ -60,3 +60,10 @@ metadata:
   name: mothercodesbest
   labels:
      name: mothercodesbest.dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nicu-calculations
+  labels:
+    name: nicu-calculations
