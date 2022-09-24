@@ -14,7 +14,7 @@ spec:
         app: backend
     spec:
       containers:
-      - name: php
+      - name: backend
         image: alkrauss48/websockets-backend:latest
         ports:
         - containerPort: 7070
