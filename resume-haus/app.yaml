@@ -32,12 +32,6 @@ spec:
         volumeMounts:
         - name: storage
           mountPath: "/app/storage"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 3
-          periodSeconds: 3
         env:
         - name: ENVIRONMENT
           value: production
