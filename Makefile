@@ -4,7 +4,7 @@ init:
 	helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 	helm repo update
 	helm install nginx-ingress ingress-nginx/ingress-nginx --set controller.publishService.enabled=true
-	helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0 --set installCRDs=true
+	helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.10.1 --set installCRDs=true
 	helm upgrade --install metrics-server metrics-server/metrics-server
 
 retain:
