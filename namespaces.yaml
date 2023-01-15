@@ -67,3 +67,10 @@ metadata:
   name: nicu-calculations
   labels:
     name: nicu-calculations
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tidbits
+  labels:
+    name: tidbits
