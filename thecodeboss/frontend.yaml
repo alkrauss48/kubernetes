@@ -13,36 +13,24 @@ spec:
       labels:
         app: frontend
     spec:
-      volumes:
-      - name: plugins
-        persistentVolumeClaim:
-          claimName: plugins
-      - name: uploads
-        persistentVolumeClaim:
-          claimName: uploads
-      initContainers:
-        - name: plugins-data-permission-fix
-          image: busybox
-          command: ["/bin/chmod","-R","777", "/data"]
-          volumeMounts:
-            - name: plugins
-              mountPath: /data
-        - name: uploads-data-permission-fix
-          image: busybox
-          command: ["/bin/chmod","-R","777", "/data"]
-          volumeMounts:
-            - name: uploads
-              mountPath: /data
       containers:
-      - name: nginx
-        image: alkrauss48/thecodeboss.dev-frontend:latest
+      - name: frontend
+        image: alkrauss48/thecodeboss-hugo:dev-main
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: plugins
-          mountPath: "/var/www/html/wp-content/plugins"
-        - name: uploads
-          mountPath: "/var/www/html/wp-content/uploads"
+        resources:
+          requests:
+            memory: "4Mi"
+            cpu: "1m"
+          limits:
+            memory: "80Mi"
+            cpu: "20m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 3
+          periodSeconds: 3
 ---
 apiVersion: v1
 kind: Service
@@ -51,7 +39,7 @@ metadata:
   namespace: thecodeboss
 spec:
   type: ClusterIP
-  selector:
-    app: frontend
   ports:
   - port: 80
+  selector:
+    app: frontend
