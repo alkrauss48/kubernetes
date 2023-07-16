@@ -74,3 +74,10 @@ metadata:
   name: tidbits
   labels:
     name: tidbits
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: takahashi-slides
+  labels:
+    name: takahashi-slides
