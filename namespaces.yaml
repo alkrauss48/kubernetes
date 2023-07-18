@@ -78,6 +78,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: takahashi-slides
+  name: simple-slides
   labels:
-    name: takahashi-slides
+    name: simple-slides
