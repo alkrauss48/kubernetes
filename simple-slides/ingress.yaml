@@ -22,3 +22,40 @@ spec:
               name: frontend
               port:
                 number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: slides-tcb-ingress
+  namespace: simple-slides
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/permanent-redirect: https://simpleslides.dev$request_uri
+spec:
+  tls:
+    - hosts:
+      - slides.thecodeboss.dev
+      - www.simpleslides.dev
+      secretName: slides-tcb-ingress-tls
+  rules:
+    - host: slides.thecodeboss.dev
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 80
+    - host: www.simpleslides.dev
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: frontend
+              port:
+                number: 80
