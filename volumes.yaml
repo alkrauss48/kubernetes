@@ -27,34 +27,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plugins
-  namespace: thecodeboss
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: do-block-storage
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: uploads
-  namespace: thecodeboss
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: do-block-storage
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: database
-  namespace: thecodeboss
+  namespace: simple-slides
 spec:
   accessModes:
   - ReadWriteOnce
