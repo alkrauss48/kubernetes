@@ -30,8 +30,10 @@ spec:
               key: appKey
         - name: APP_DEBUG
           value: "false"
+        - name: PHP_CLI_SERVER_WORKERS
+          value: "3"
         - name: APP_URL
-          value: https://v2.simpleslides.dev
+          value: https://simpleslides.dev
         - name: LOG_LEVEL
           value: critical
         - name: DB_CONNECTION
