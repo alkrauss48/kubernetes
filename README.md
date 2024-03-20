@@ -3,18 +3,22 @@ My Kubernetes Config
 
 This repo houses my Digital Ocean managed kubernetes configuration for the following projects:
 * [thecodeboss.dev](https://thecodeboss.dev)
-  * Includes redirect from [thecodeboss.dev/resume](https://thecodeboss.dev/resume)
-  * Includes redirect from [thesocietea.org](https://thesocietea.org)
-* [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
-  * Includes redirect from [labs.thesocietea.org](https://labs.thesocietea.org)
+  * Includes nginx rewrite for [/resume](https://thecodeboss.dev/resume)
+  * Includes redirect from [www.thecodeboss.dev](https://www.thecodeboss.dev)
+    and [thesocietea.org](https://thesocietea.org)
+* [simpleslides.dev](https://simpleslides.dev)
+  * Includes redirect from [v2.simpleslides.dev](https://v2.simpleslides.dev)
+    and [slides.thecodeboss.dev](https://slides.thecodeboss.dev)
 * [resumeha.us](https://resumeha.us)
   * Includes redirect from [resume.thesocietea.org](https://resume.thesocietea.org)
+* [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
+  * Includes redirect from [labs.thesocietea.org](https://labs.thesocietea.org)
 * [cyruskrauss.com](https://cyruskrauss.com)
 * [api.cyruskrauss.com](https://api.cyruskrauss.com)
 * [growlerfriday.com](https://growlerfriday.com)
 * [mothercodesbest.dev](https://mothercodesbest.dev)
+* [nicu.mothercodesbest.dev](https://nicu.mothercodesbest.dev/)
 * [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
-* Carnegie Chart - Coming Soon
 
 #### Note
 
@@ -58,25 +62,25 @@ kubectl rollout restart deployment/<deployment> -n <namespace>
 
 ## [thecodeboss.dev](https://thecodeboss.dev)
 
-Services: 3 (frontend, wordpress, & db)
-Includes: Deployments, Services, Ingresses, Secret, and Volumes
+Services: 1 (frontend)
+Includes: Deployment, Service, Ingresses
 
 To Deploy:
 ```
-cp thecodeboss/secrets.yaml.example thecodeboss/secrets.yaml
-# Add in your secrets to thecodeboss/secrets.yaml
-
 kubectl apply -f thecodeboss
 ```
 
-## [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
+## [simpleslides.dev](https://simpleslides.dev)
 
-Services: 2 (frontend & backend)
-Includes: Deployments, Services, and Ingresses
+Services: 3 (app, db, redis)
+Includes: Deployments, Services, Ingresses, Secrets, and Volume
 
 To Deploy:
 ```
-kubectl apply -f labs
+cp simple-slides/secrets.yaml.example simple-slides/secrets.yaml
+# Add in your secrets to simple-slides/secrets.yaml
+
+kubectl apply -f simple-slides
 ```
 
 ## [resumeha.us](https://resumeha.us)
@@ -90,6 +94,17 @@ cp resume-haus/secrets.yaml.example resume-haus/secrets.yaml
 # Add in your secrets to resume-haus/secrets.yaml
 
 kubectl apply -f resume-haus
+```
+
+
+## [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
+
+Services: 2 (frontend & backend)
+Includes: Deployments, Services, and Ingresses
+
+To Deploy:
+```
+kubectl apply -f labs
 ```
 
 ## [cyruskrauss.com](https://cyruskrauss.com)
@@ -130,6 +145,16 @@ Includes: Deployment, Service, and Ingress
 To Deploy:
 ```
 kubectl apply -f mothercodesbest
+```
+
+## [nicu.mothercodesbest.dev](https://nicu.mothercodesbest.dev)
+
+Services: 1 (app)
+Includes: Deployment, Service, Ingress
+
+To Deploy:
+```
+kubectl apply -f nicu-calculations
 ```
 
 ## [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
