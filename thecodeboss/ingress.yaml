@@ -26,32 +26,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: resume-ingress
-  namespace: thecodeboss
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rewrite-target: https://resumeha.us/aaron-krauss
-spec:
-  tls:
-    - hosts:
-      - thecodeboss.dev
-      secretName: ingress-tls
-  rules:
-    - host: thecodeboss.dev
-      http:
-        paths:
-        - path: /resume
-          pathType: Exact
-          backend:
-            service:
-              name: frontend
-              port:
-                number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
   name: soc-ingress
   namespace: thecodeboss
   annotations:
