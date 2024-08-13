@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envs
+  namespace: simple-slides
+data:
+  APP_NAME: Simple Slides
+  APP_ENV: production
+  APP_DEBUG: "false"
+  PHP_CLI_SERVER_WORKERS: "3"
+  APP_URL: https://simpleslides.dev
+  LOG_LEVEL: critical
+  DB_CONNECTION: pgsql
+  DB_HOST: db
+  DB_PORT: "5432"
+  BROADCAST_DRIVER: redis
+  CACHE_DRIVER: redis
+  QUEUE_CONNECTION: redis
+  SESSION_DRIVER: redis
+  FILESYSTEM_DISK: do
+  SESSION_LIFETIME: "120"
+  REDIS_HOST: redis
+  REDIS_PASSWORD: "null"
+  REDIS_PORT: "6379"
+  MAIL_MAILER: smtp
+  MAIL_HOST: smtp.sendgrid.net
+  MAIL_PORT: "587"
+  MAIL_USERNAME: apikey
+  MAIL_ENCRYPTION: tls
+  MAIL_FROM_NAME: Simple Slides
+  MAIL_FROM_ADDRESS: no-reply@simpleslides.dev
+  DO_DEFAULT_REGION: nyc3
+  DO_ENDPOINT: https://nyc3.digitaloceanspaces.com/
+  FILAMENT_FILESYSTEM_DISK: do
+  MEDIA_DISK: do
+  MEDIA_PREFIX: simpleslides.dev/user-uploads

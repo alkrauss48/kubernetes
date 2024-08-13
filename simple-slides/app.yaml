@@ -16,32 +16,18 @@ spec:
       containers:
       - name: app
         image: alkrauss48/simple-slides-laravel:dev-main
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: envs
         env:
-        - name: APP_NAME
-          value: Simple Slides
-        - name: APP_ENV
-          value: production
         - name: APP_KEY
           valueFrom:
             secretKeyRef:
               name: app
               key: appKey
-        - name: APP_DEBUG
-          value: "false"
-        - name: PHP_CLI_SERVER_WORKERS
-          value: "3"
-        - name: APP_URL
-          value: https://simpleslides.dev
-        - name: LOG_LEVEL
-          value: critical
-        - name: DB_CONNECTION
-          value: pgsql
-        - name: DB_HOST
-          value: db
-        - name: DB_PORT
-          value: "5432"
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
@@ -57,43 +43,11 @@ spec:
             secretKeyRef:
               name: db
               key: password
-        - name: BROADCAST_DRIVER
-          value: redis
-        - name: CACHE_DRIVER
-          value: redis
-        - name: QUEUE_CONNECTION
-          value: sync
-        - name: SESSION_DRIVER
-          value: redis
-        - name: FILESYSTEM_DISK
-          value: do
-        - name: SESSION_LIFETIME
-          value: "120"
-        - name: REDIS_HOST
-          value: redis
-        - name: REDIS_PASSWORD
-          value: "null"
-        - name: REDIS_PORT
-          value: "6379"
-        - name: MAIL_MAILER
-          value: smtp
-        - name: MAIL_HOST
-          value: smtp.sendgrid.net
-        - name: MAIL_PORT
-          value: "587"
-        - name: MAIL_USERNAME
-          value: apikey
         - name: MAIL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: app
               key: sendgridApiToken
-        - name: MAIL_ENCRYPTION
-          value: tls
-        - name: MAIL_FROM_NAME
-          value: Simple Slides
-        - name: MAIL_FROM_ADDRESS
-          value: no-reply@simpleslides.dev
         - name: DO_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -104,21 +58,78 @@ spec:
             secretKeyRef:
               name: app
               key: digitalOceanSecretKey
-        - name: DO_DEFAULT_REGION
-          value: nyc3
         - name: DO_BUCKET
           valueFrom:
             secretKeyRef:
               name: app
               key: digitalOceanBucket
-        - name: DO_ENDPOINT
-          value: https://nyc3.digitaloceanspaces.com/
-        - name: FILAMENT_FILESYSTEM_DISK
-          value: do
-        - name: MEDIA_DISK
-          value: do
-        - name: MEDIA_PREFIX
-          value: simpleslides.dev/user-uploads
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: simple-slides
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: alkrauss48/simple-slides-laravel:dev-main
+        imagePullPolicy: Always
+        command:
+        - s6-svscan
+        - /etc/s6/worker
+        envFrom:
+        - configMapRef:
+            name: envs
+        env:
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: appKey
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: database
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: password
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: sendgridApiToken
+        - name: DO_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: digitalOceanAccessKey
+        - name: DO_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: digitalOceanSecretKey
+        - name: DO_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: digitalOceanBucket
 ---
 apiVersion: v1
 kind: Service
