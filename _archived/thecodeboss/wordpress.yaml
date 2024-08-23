@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: thecodeboss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      volumes:
+      - name: plugins
+        persistentVolumeClaim:
+          claimName: plugins
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+      initContainers:
+        - name: plugins-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: plugins
+              mountPath: /data
+        - name: uploads-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: uploads
+              mountPath: /data
+      containers:
+      - name: wordpress
+        image: alkrauss48/thecodeboss.dev:latest
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: plugins
+          mountPath: "/var/www/html/wp-content/plugins"
+        - name: uploads
+          mountPath: "/var/www/html/wp-content/uploads"
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: "db:3306"
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: database
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: username
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+  namespace: thecodeboss
+spec:
+  type: ClusterIP
+  selector:
+    app: wordpress
+  ports:
+  - port: 9000

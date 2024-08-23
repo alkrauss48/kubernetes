@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: thecodeboss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      volumes:
+      - name: plugins
+        persistentVolumeClaim:
+          claimName: plugins
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: uploads
+      initContainers:
+        - name: plugins-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: plugins
+              mountPath: /data
+        - name: uploads-data-permission-fix
+          image: busybox
+          command: ["/bin/chmod","-R","777", "/data"]
+          volumeMounts:
+            - name: uploads
+              mountPath: /data
+      containers:
+      - name: nginx
+        image: alkrauss48/thecodeboss.dev-frontend:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: plugins
+          mountPath: "/var/www/html/wp-content/plugins"
+        - name: uploads
+          mountPath: "/var/www/html/wp-content/uploads"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: thecodeboss
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - port: 80
