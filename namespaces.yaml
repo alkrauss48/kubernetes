@@ -22,13 +22,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: resume-haus
-  labels:
-     name: resume-haus
----
-apiVersion: v1
-kind: Namespace
-metadata:
   name: thecodeboss
   labels:
      name: thecodeboss
@@ -71,13 +64,13 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: tidbits
+  name: simple-slides
   labels:
-    name: tidbits
+    name: simple-slides
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: simple-slides
+  name: lucas-hints-web
   labels:
-    name: simple-slides
+    name: lucas-hints-web
