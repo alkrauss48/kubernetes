@@ -3,18 +3,13 @@ My Kubernetes Config
 
 This repo houses my Digital Ocean managed kubernetes configuration for the following projects:
 * [thecodeboss.dev](https://thecodeboss.dev)
-  * Includes nginx rewrite for [/resume](https://thecodeboss.dev/resume)
-  * Includes redirect from [www.thecodeboss.dev](https://www.thecodeboss.dev)
-    and [thesocietea.org](https://thesocietea.org)
+  * Includes redirect from [thesocietea.org](https://thesocietea.org)
 * [simpleslides.dev](https://simpleslides.dev)
-  * Includes redirect from [v2.simpleslides.dev](https://v2.simpleslides.dev)
-    and [slides.thecodeboss.dev](https://slides.thecodeboss.dev)
-* [resumeha.us](https://resumeha.us)
-  * Includes redirect from [resume.thesocietea.org](https://resume.thesocietea.org)
 * [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
   * Includes redirect from [labs.thesocietea.org](https://labs.thesocietea.org)
 * [cyruskrauss.com](https://cyruskrauss.com)
 * [api.cyruskrauss.com](https://api.cyruskrauss.com)
+* [lucaskrauss.dev](https://lucaskrauss.dev)
 * [growlerfriday.com](https://growlerfriday.com)
 * [mothercodesbest.dev](https://mothercodesbest.dev)
 * [nicu.mothercodesbest.dev](https://nicu.mothercodesbest.dev/)
@@ -83,19 +78,6 @@ cp simple-slides/secrets.yaml.example simple-slides/secrets.yaml
 kubectl apply -f simple-slides
 ```
 
-## [resumeha.us](https://resumeha.us)
-
-Services: 2 (app & db)
-Includes: Deployments, Services, Ingresses, Secrets, and Volumes
-
-To Deploy:
-```
-cp resume-haus/secrets.yaml.example resume-haus/secrets.yaml
-# Add in your secrets to resume-haus/secrets.yaml
-
-kubectl apply -f resume-haus
-```
-
 
 ## [labs.thecodeboss.dev](https://labs.thecodeboss.dev)
 
@@ -125,6 +107,16 @@ Includes: Deployment, Service, Ingress, and Secrets
 To Deploy:
 ```
 kubectl apply -f cyrus-lyrics-api
+```
+
+## [lucaskrauss.dev](https://lucaskrauss.dev)
+
+Services: 1 (frontend)
+Includes: Deployment, Service, and Ingress
+
+To Deploy:
+```
+kubectl apply -f lucas-hints-web
 ```
 
 ## [growlerfriday.com](https://growlerfriday.com)
