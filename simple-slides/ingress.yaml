@@ -35,32 +35,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - slides.thecodeboss.dev
       - www.simpleslides.dev
-      - v2.simpleslides.dev
       secretName: slides-tcb-ingress-tls
   rules:
-    - host: slides.thecodeboss.dev
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: app
-              port:
-                number: 80
     - host: www.simpleslides.dev
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: app
-              port:
-                number: 80
-    - host: v2.simpleslides.dev
       http:
         paths:
         - path: /
