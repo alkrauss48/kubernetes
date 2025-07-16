@@ -74,3 +74,10 @@ metadata:
   name: lucas-hints-web
   labels:
     name: lucas-hints-web
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: the-krauss-haus
+  labels:
+    name: the-krauss-haus
