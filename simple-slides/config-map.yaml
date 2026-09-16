@@ -14,7 +14,7 @@ data:
   DB_HOST: db
   DB_PORT: "5432"
   BROADCAST_DRIVER: redis
-  CACHE_DRIVER: redis
+  CACHE_STORE: redis
   QUEUE_CONNECTION: redis
   SESSION_DRIVER: redis
   FILESYSTEM_DISK: do
