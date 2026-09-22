@@ -176,12 +176,12 @@ Postgres 18 moved `PGDATA` one level down.
 
 **`tei-embed` is not optional.** Every question is embedded at query time by
 the same model the corpus was embedded with, so retrieval stops working
-without it, rather than degrading. First boot downloads ~2.3Gi of weights onto
+without it, rather than degrading. First boot downloads 2.2Gi of weights onto
 the `tei-models` claim, which takes several minutes; the startup probe allows
 fifteen. TEI publishes `linux/amd64` only.
 
-**Reranking is off.** A second TEI instance needs another ~3Gi resident, which
-the current node pool does not have. `BOOKS_RERANK_ENABLED` and
+**Reranking is off.** A second TEI instance needs another ~3Gi resident and
+another 3Gi claim, which the current node pool does not have. `BOOKS_RERANK_ENABLED` and
 `HOUSE_RERANK_ENABLED` are `"false"` in the ConfigMap and retrieval falls back
 to the fused RRF order. Turning it on means a `tei-rerank` Deployment, a
 bigger node, and `AI_RERANKING_PROVIDER`.
