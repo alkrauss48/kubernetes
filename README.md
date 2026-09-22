@@ -14,6 +14,7 @@ This repo houses my Digital Ocean managed kubernetes configuration for the follo
 * [mothercodesbest.dev](https://mothercodesbest.dev)
 * [nicu.mothercodesbest.dev](https://nicu.mothercodesbest.dev/)
 * [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
+* [ask.thekrausshaus.com](https://ask.thekrausshaus.com)
 
 #### Note
 
@@ -147,6 +148,61 @@ Includes: Deployment, Service, Ingress
 To Deploy:
 ```
 kubectl apply -f nicu-calculations
+```
+
+## [ask.thekrausshaus.com](https://ask.thekrausshaus.com)
+
+The API behind the bar on [thekrausshaus.com](https://thekrausshaus.com). Two
+bartenders answer questions over Server-Sent Events, grounded in a corpus
+retrieved from Postgres.
+
+Services: 3 (app, db, tei-embed)
+Includes: Deployments, Services, Ingress, ConfigMap, Secrets, and Volumes
+
+To Deploy:
+```
+cp ask-eddie/secrets.yaml.example ask-eddie/secrets.yaml
+# Add in your secrets to ask-eddie/secrets.yaml
+
+kubectl apply -f ask-eddie
+```
+
+#### Notes
+
+**`db` is pgvector, not stock Postgres.** `book_chunks.embedding` is a
+`vector(1024)` column; the application's own migration creates the extension.
+The claim mounts at `/var/lib/postgresql` rather than `.../data` because
+Postgres 18 moved `PGDATA` one level down.
+
+**`tei-embed` is not optional.** Every question is embedded at query time by
+the same model the corpus was embedded with, so retrieval stops working
+without it, rather than degrading. First boot downloads 2.2Gi of weights onto
+the `tei-models` claim, which takes several minutes; the startup probe allows
+fifteen. TEI publishes `linux/amd64` only.
+
+**Reranking is off.** A second TEI instance needs another ~3Gi resident and
+another 3Gi claim, which the current node pool does not have. `BOOKS_RERANK_ENABLED` and
+`HOUSE_RERANK_ENABLED` are `"false"` in the ConfigMap and retrieval falls back
+to the fused RRF order. Turning it on means a `tei-rerank` Deployment, a
+bigger node, and `AI_RERANKING_PROVIDER`.
+
+**The ingress turns nginx's response buffering off.** `POST /api/ask` streams,
+and buffering would hold every frame until the answer finished — the stream
+still arrives, but all at once, at the end.
+
+**An empty `barApiKeys` closes the API rather than opening it.** `VerifyBarKey`
+fails closed, so a deploy that forgot the secret is a door nobody can open.
+The key belongs on the Krauss Haus server, never in a browser: whoever reads it
+spends the AI budget.
+
+First deploy, after the pods are up:
+```
+kubectl exec -n ask-eddie deploy/app -- php artisan migrate --force
+
+# The corpus is built by the long-running import commands, not by a seeder.
+# Restoring a dump taken from a local run is the fast path:
+kubectl exec -i -n ask-eddie deploy/db -- \
+  pg_restore -U $DB_USERNAME -d $DB_DATABASE --clean --if-exists < laravel.dump
 ```
 
 ## [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)

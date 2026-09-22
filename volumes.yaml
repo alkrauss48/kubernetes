@@ -36,3 +36,40 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: do-block-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database
+  namespace: ask-eddie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # Measured: 733Mi in the data directory, 416Mi of which is book_chunks
+      # with its vector and tsvector indexes. The headroom is sized for the
+      # two events that need a second copy of something -- a restore, whose
+      # WAL is bounded by max_wal_size (1Gi), and a REINDEX of book_chunks,
+      # which builds the new index before dropping the old. do-block-storage
+      # allows expansion, so growing this later costs a patch, not a rebuild.
+      storage: 3Gi
+  storageClassName: do-block-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tei-models
+  namespace: ask-eddie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # Measured: bge-m3's weights are 2.2Gi, and this namespace runs no
+      # second model -- the reranker is off. Cached here so a restart does
+      # not re-download them before the pod can serve a single query. 2Gi
+      # cannot hold the model at all, so this is the floor rather than a
+      # choice; adding tei-rerank later would need 3Gi more.
+      storage: 3Gi
+  storageClassName: do-block-storage

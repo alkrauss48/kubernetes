@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tei-embed
+  namespace: ask-eddie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tei-embed
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tei-embed
+    spec:
+      # Text Embeddings Inference publishes linux/amd64 only -- there is no
+      # arm64 manifest for any tag. Stated rather than assumed, so an arm64
+      # node joining the pool fails to schedule instead of crash-looping.
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      volumes:
+      - name: tei-models
+        persistentVolumeClaim:
+          claimName: tei-models
+      containers:
+      - name: tei-embed
+        image: ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+        args:
+        # The corpus vectors and every query vector have to come from the same
+        # server. This model is pinned to the vector column's own typmod --
+        # changing it needs a migration and a full re-embed, not a restart.
+        - --model-id
+        - BAAI/bge-m3
+        # ChunkPacker already caps chunks at 440 tokens, nowhere near bge-m3's
+        # 8192 limit. Belt and braces: a truncation beats a 413 mid-request.
+        - --auto-truncate
+        # TEI's 16384 default allocates a warm-up activation buffer this model
+        # cannot fit beside its own float32 weights, and the container is
+        # OOM-killed before it ever serves a request.
+        - --max-batch-tokens
+        - "4096"
+        - --max-client-batch-size
+        - "32"
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "250m"
+          limits:
+            memory: "3Gi"
+            cpu: "2000m"
+        volumeMounts:
+        # The image caches model weights here. Without the claim, every
+        # restart re-downloads ~2.3Gi before the pod can answer anything.
+        - name: tei-models
+          mountPath: /data
+        # A cold volume downloads the model before the server binds, which
+        # takes minutes. The startup probe buys that time without a liveness
+        # probe loose enough to miss a real hang later.
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 80
+          periodSeconds: 10
+          failureThreshold: 90
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          periodSeconds: 10
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tei-embed
+  namespace: ask-eddie
+spec:
+  type: ClusterIP
+  selector:
+    app: tei-embed
+  ports:
+  - port: 80
+    targetPort: 80
