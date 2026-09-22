@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: ask-eddie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  # The claim is ReadWriteOnce, so a rolling update would deadlock waiting for
+  # a second pod to attach the volume the first one still holds.
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      volumes:
+      - name: database
+        persistentVolumeClaim:
+          claimName: database
+      containers:
+      - name: db
+        # pgvector, not stock postgres: book_chunks.embedding is vector(1024)
+        # and the migration creates the extension itself. Keep the PG major in
+        # step with compose.yaml so a dump restores without a version jump.
+        image: pgvector/pgvector:pg18
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "50m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        readinessProbe:
+          exec:
+            # Through a shell on purpose: Kubernetes expands $(VAR) in a
+            # container's command and args, but not in a probe's, so the
+            # credentials have to be read by the shell at run time.
+            command: ["sh", "-c", 'exec pg_isready -q -U "$POSTGRES_USER" -d "$POSTGRES_DB"']
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        # Mounted one level above the data directory, exactly as compose.yaml
+        # does it. Postgres 18 moved PGDATA to /var/lib/postgresql/18/docker,
+        # so a mount on the old .../data path would leave the cluster on the
+        # container's own filesystem and lose it on every restart.
+        - name: database
+          mountPath: /var/lib/postgresql
+          subPath: postgres
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: database
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: username
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: password
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db
+                key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: ask-eddie
+spec:
+  type: ClusterIP
+  selector:
+    app: db
+  ports:
+  - port: 5432

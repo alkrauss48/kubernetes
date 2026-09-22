@@ -81,3 +81,10 @@ metadata:
   name: the-krauss-haus
   labels:
     name: the-krauss-haus
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ask-eddie
+  labels:
+    name: ask-eddie

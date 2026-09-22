@@ -36,3 +36,33 @@ spec:
     requests:
       storage: 1Gi
   storageClassName: do-block-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database
+  namespace: ask-eddie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # The book corpus and its vector indexes measure ~550Mi restored; the
+      # rest is headroom for WAL and a second corpus import.
+      storage: 5Gi
+  storageClassName: do-block-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tei-models
+  namespace: ask-eddie
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # bge-m3's weights are ~2.3Gi. Cached here so a restart does not
+      # re-download them before the pod can serve a single query.
+      storage: 5Gi
+  storageClassName: do-block-storage

@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: ask-eddie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: alkrauss48/ask-eddie:dev-main
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "50m"
+          limits:
+            memory: "768Mi"
+            cpu: "1000m"
+        # /up is Laravel's health route, registered in bootstrap/app.php and
+        # deliberately outside the bar.key group -- so the kubelet can reach it
+        # without holding an API key, and reaching it costs no inference.
+        readinessProbe:
+          httpGet:
+            path: /up
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /up
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        envFrom:
+        - configMapRef:
+            name: envs
+        env:
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: appKey
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: openaiApiKey
+        # Comma-separated, and a list so a key can be rotated without a window
+        # where the site is locked out. Empty fails closed: VerifyBarKey
+        # refuses every request when nothing is configured.
+        - name: BAR_API_KEYS
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: barApiKeys
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: database
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: ask-eddie
+spec:
+  type: ClusterIP
+  selector:
+    app: app
+  ports:
+  - port: 80
+    targetPort: 80

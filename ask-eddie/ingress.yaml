@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: ask-eddie
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # POST /api/ask answers with Server-Sent Events. nginx buffers proxied
+    # responses by default, which holds every frame until the answer is
+    # finished -- the stream still arrives, all at once, at the end, and the
+    # client's whole "who is pouring / what are they doing" UI never moves.
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    # An answer runs BAR_ANSWER_TIMEOUT (60s) per provider call and may make
+    # several, including a consult with the other bartender. nginx's 60s
+    # default would cut a long answer off mid-sentence with a 504.
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+      - ask.thekrausshaus.com
+      secretName: ingress-tls
+  rules:
+    - host: ask.thekrausshaus.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: app
+              port:
+                number: 80

@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envs
+  namespace: ask-eddie
+data:
+  APP_NAME: Ask Eddie
+  APP_ENV: production
+  # Also closes POST /api/search, which the controller gates on app.debug.
+  APP_DEBUG: "false"
+  APP_URL: https://ask.thekrausshaus.com
+  # php artisan serve is single-threaded, and one streamed answer holds a
+  # worker for the whole of its thirty-plus seconds. Without workers, every
+  # other request to the API queues behind the answer in flight.
+  PHP_CLI_SERVER_WORKERS: "8"
+  LOG_CHANNEL: stderr
+  LOG_STACK: single
+  LOG_LEVEL: error
+  DB_CONNECTION: pgsql
+  DB_HOST: db
+  DB_PORT: "5432"
+  # No Redis in this namespace: nothing is queued, and the throttle:bar-ask
+  # limiter reads the cache store, which the database serves.
+  CACHE_STORE: database
+  QUEUE_CONNECTION: database
+  SESSION_DRIVER: database
+  SESSION_LIFETIME: "120"
+  BROADCAST_CONNECTION: log
+  FILESYSTEM_DISK: local
+  MAIL_MAILER: log
+
+  # Retrieval. Corpus vectors and query vectors must come from the same
+  # server, so this points at the in-namespace TEI running the same model the
+  # corpus was embedded with. Changing either needs a re-embed, not a restart.
+  AI_EMBEDDINGS_PROVIDER: tei
+  TEI_EMBED_URL: http://tei-embed:80/v1
+  BOOKS_EMBEDDING_MODEL: BAAI/bge-m3
+  BOOKS_EMBEDDING_DIMENSIONS: "1024"
+  BOOKS_EMBEDDING_BATCH: "32"
+
+  # Reranking is off because a second TEI instance would need another ~3Gi
+  # resident beside the embedder, which this node pool does not have.
+  # Retrieval falls back to the fused RRF order. Turning it on means adding a
+  # tei-rerank Deployment and AI_RERANKING_PROVIDER first.
+  BOOKS_RERANK_ENABLED: "false"
+  HOUSE_RERANK_ENABLED: "false"
+
+  OPENAI_TEXT_MODEL: gpt-5.6-luna
+
+  # Where Sasha's citations point. The API is not the site.
+  HOUSE_SITE_URL: https://thekrausshaus.com
+
+  # Questions per minute per presented key. Bounds how often, not how much --
+  # the two BAR_ANSWER_* keys below bound how much.
+  BAR_API_RATE_LIMIT: "12"
+  BAR_ANSWER_MAX_TOKENS: "1500"
+  BAR_ANSWER_TIMEOUT: "60"
