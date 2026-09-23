@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: alkrauss48/ask-eddie:main
+        image: alkrauss48/ask-eddie:dev-main
         imagePullPolicy: Always
         ports:
         - containerPort: 80
