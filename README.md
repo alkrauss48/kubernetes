@@ -14,6 +14,7 @@ This repo houses my Digital Ocean managed kubernetes configuration for the follo
 * [mothercodesbest.dev](https://mothercodesbest.dev)
 * [nicu.mothercodesbest.dev](https://nicu.mothercodesbest.dev/)
 * [websockets.thecodeboss.dev](https://websockets.thecodeboss.dev)
+* [thekrausshaus.com](https://thekrausshaus.com)
 * [ask.thekrausshaus.com](https://ask.thekrausshaus.com)
 
 #### Note
@@ -149,6 +150,44 @@ To Deploy:
 ```
 kubectl apply -f nicu-calculations
 ```
+
+## [thekrausshaus.com](https://thekrausshaus.com)
+
+The site itself: a SvelteKit app on the Node adapter. It also hosts the bar's
+client, which talks to [ask.thekrausshaus.com](#askthekrausshauscom) through a
+same-origin proxy route.
+
+Services: 1 (frontend)
+Includes: Deployment, Service, Ingress, and Secrets
+
+To Deploy:
+```
+cp the-krauss-haus/secrets.yaml.example the-krauss-haus/secrets.yaml
+# Add in your secrets to the-krauss-haus/secrets.yaml
+
+kubectl apply -f the-krauss-haus
+```
+
+#### Notes
+
+**The API key never reaches a browser.** `barApiKey` must be one of the
+comma-separated keys in ask-eddie's `barApiKeys`, and it is read server-side
+with `$env/dynamic/private`. The guest posts to `/api/bar/ask` same-origin and
+this process adds the `X-Bar-Key` header. Anything `PUBLIC_`-prefixed is in
+the bundle, and whoever reads it spends the AI budget.
+
+**`BAR_API_URL` is in-cluster.** It points at ask-eddie's Service across the
+namespace rather than at the public host, which keeps the stream inside the
+cluster and puts no second nginx between the two.
+
+**Both ingresses turn response buffering off.** The answer is Server-Sent
+Events the whole way down, so a buffered hop anywhere holds every frame until
+the answer finishes.
+
+**One key, one allowance.** Every guest presents the same key, so ask-eddie's
+`BAR_API_RATE_LIMIT` is the site's ceiling. `BAR_CLIENT_RATE_PER_MIN` is the
+per-visitor cap the proxy enforces underneath it, in memory -- which the
+single replica is what makes sound.
 
 ## [ask.thekrausshaus.com](https://ask.thekrausshaus.com)
 

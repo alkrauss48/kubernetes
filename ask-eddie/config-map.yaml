@@ -51,7 +51,10 @@ data:
   HOUSE_SITE_URL: https://thekrausshaus.com
 
   # Questions per minute per presented key. Bounds how often, not how much --
-  # the two BAR_ANSWER_* keys below bound how much.
-  BAR_API_RATE_LIMIT: "12"
+  # the two BAR_ANSWER_* keys below bound how much. The Krauss Haus server
+  # holds one key and presents it for every guest, so this is the whole
+  # site's ceiling, not one visitor's: the per-visitor cap is
+  # BAR_CLIENT_RATE_PER_MIN in that namespace.
+  BAR_API_RATE_LIMIT: "60"
   BAR_ANSWER_MAX_TOKENS: "1500"
   BAR_ANSWER_TIMEOUT: "60"

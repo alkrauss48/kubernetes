@@ -19,6 +19,41 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
+        env:
+        # The bar. Everything below is read with $env/dynamic/private, so the
+        # image is built once and configured here at runtime rather than
+        # having any of it baked into the bundle.
+        #
+        # Cross-namespace Service DNS, not the public host: it keeps the whole
+        # stream inside the cluster, skips a round trip out to the internet
+        # and back, and puts no second nginx between this process and the
+        # answer it is relaying.
+        - name: BAR_API_URL
+          value: http://app.ask-eddie.svc.cluster.local
+        # Never PUBLIC_-prefixed. If this reaches a browser bundle it is
+        # public, and whoever reads it spends the AI budget.
+        - name: BAR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app
+              key: barApiKey
+        # Per-visitor cap, enforced in the proxy in front of ask-eddie's own
+        # BAR_API_RATE_LIMIT. Upstream throttles per presented key and every
+        # guest here presents the same one, so without this a single guest
+        # could eat the whole site's allowance. In-memory, which the single
+        # replica is what makes sound -- scale this up and the cap becomes
+        # per-pod.
+        - name: BAR_CLIENT_RATE_PER_MIN
+          value: "8"
+        # Time allowed to get response headers back from ask-eddie.
+        - name: BAR_CONNECT_TIMEOUT_MS
+          value: "30000"
+        # Time allowed *between* chunks once the stream is open. Deliberately
+        # above ask-eddie's 60s BAR_ANSWER_TIMEOUT, so a stalled provider call
+        # surfaces as its `error` frame -- which the guest sees -- rather than
+        # as this end severing the connection first.
+        - name: BAR_IDLE_TIMEOUT_MS
+          value: "75000"
 ---
 apiVersion: v1
 kind: Service

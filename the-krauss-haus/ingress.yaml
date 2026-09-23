@@ -6,6 +6,18 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    # /api/bar/ask relays ask-eddie's Server-Sent Events straight through to
+    # the guest. nginx buffers proxied responses by default, which would hold
+    # every frame until the answer finished -- the stream still arrives, all
+    # at once, at the end, and the "who is pouring / what are they doing" UI
+    # never moves. The same annotation is on the ask-eddie ingress for the
+    # same reason; both hops have to be unbuffered.
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    # An answer can run several provider calls, including a consult between
+    # the two bartenders. nginx's 60s default would cut a long one off
+    # mid-sentence with a 504.
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
 spec:
   tls:
     - hosts:
