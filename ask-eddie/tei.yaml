@@ -36,11 +36,14 @@ spec:
         # ChunkPacker already caps chunks at 440 tokens, nowhere near bge-m3's
         # 8192 limit. Belt and braces: a truncation beats a 413 mid-request.
         - --auto-truncate
-        # TEI's 16384 default allocates a warm-up activation buffer this model
-        # cannot fit beside its own float32 weights, and the container is
-        # OOM-killed before it ever serves a request.
+        # Warm-up allocates one batch this wide, and attention memory grows
+        # with the square of it -- at 4096 that buffer alone outweighs the
+        # float32 weights and the container is OOM-killed mid-warmup, before
+        # it ever serves a request. Real chunks cap at 440 tokens
+        # (books.chunking.max_tokens), so this is still 4x more than the app
+        # ever sends in one sequence.
         - --max-batch-tokens
-        - "4096"
+        - "2048"
         - --max-client-batch-size
         - "32"
         ports:
